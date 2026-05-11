@@ -1,0 +1,278 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #f5f5f5;
+    color: #333;
+}
+
+/* ==================== 背景纹样层 ==================== */
+#bg-pattern {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    background-size: auto;
+    background-repeat: repeat;
+    background-position: top left;
+    transition: opacity 0.6s ease;
+}
+
+/* ==================== 隐藏编辑栏按钮 ==================== */
+#toggle_editor_btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 100;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: #666;
+    background: rgba(255,255,255,0.85);
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all 0.2s ease;
+}
+#toggle_editor_btn:hover {
+    background: rgba(255,255,255,1);
+    border-color: #bbb;
+    color: #333;
+}
+
+/* ==================== 主体容器 ==================== */
+#app-container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+/* ==================== 左侧：网格画布区域 ==================== */
+#grid-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    background: transparent;
+}
+
+#grid-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 200px;
+    min-height: 200px;
+    background: #f8f4f0;
+    border: 1px solid #e0dcd8;
+    border-radius: 4px;
+    padding: 16px;
+}
+
+#grid-canvas {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+/* 转换进度遮罩 */
+#progress-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(250,250,250,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+}
+
+#progress-box {
+    text-align: center;
+    padding: 24px 40px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-width: 300px;
+}
+
+#progress-text {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+#progress-bar-bg {
+    width: 100%;
+    height: 12px;
+    background: #e0e0e0;
+    border-radius: 0;
+    overflow: hidden;
+}
+
+#progress-bar-fill {
+    width: 0%;
+    height: 100%;
+    background: #333;
+    border-radius: 0;
+    transition: width 0.3s ease;
+}
+
+/* ==================== 右侧：编辑面板 ==================== */
+#editor-panel {
+    width: 260px;
+    min-width: 240px;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    background: transparent;
+    border-left: none;
+    transition: transform 0.35s ease, opacity 0.35s ease;
+    z-index: 2;
+}
+
+#editor-panel.hidden {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+#editor-card {
+    background: #fff;
+    border-radius: 4px;
+    padding: 16px;
+    border: 1px solid #ccc;
+}
+
+#textarea-wrapper {
+    position: relative;
+}
+
+#text_input {
+    width: 100%;
+    min-height: 160px;
+    padding: 12px;
+    font-size: 15px;
+    line-height: 1.7;
+    border: none;
+    background: transparent;
+    resize: vertical;
+    font-family: inherit;
+    color: #333;
+    outline: none;
+}
+
+#text_input::placeholder {
+    color: #bbb;
+}
+
+#char-count {
+    position: absolute;
+    bottom: 4px;
+    right: 8px;
+    font-size: 11px;
+    color: #ccc;
+}
+
+/* 转换按钮 */
+#convert_btn {
+    width: 100%;
+    padding: 14px 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 2px;
+}
+
+#convert_btn:hover {
+    background: #f5f5f5;
+    border-color: #bbb;
+}
+
+#convert_btn:active {
+    background: #eee;
+}
+
+/* ==================== 下载按钮 ==================== */
+#download_btn {
+    position: fixed;
+    top: 68px;
+    right: 16px;
+    z-index: 100;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: #666;
+    background: rgba(255,255,255,0.85);
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all 0.2s ease;
+    display: none;
+}
+
+#download_btn:hover {
+    background: rgba(255,255,255,1);
+    border-color: #bbb;
+    color: #333;
+}
+
+#download_btn.visible {
+    display: block;
+}
+
+/* ==================== 响应式 ==================== */
+@media (max-width: 768px) {
+    #app-container {
+        flex-direction: column-reverse;
+    }
+    #editor-panel {
+        width: 100%;
+        min-width: auto;
+        padding: 16px;
+        border-left: none;
+        border-top: 1px solid #eee;
+        max-height: 40vh;
+        overflow-y: auto;
+    }
+    #editor-panel.hidden {
+        transform: translateY(100%);
+    }
+    #grid-wrapper {
+        flex: 1;
+    }
+    #toggle_editor_btn {
+        top: auto;
+        bottom: 16px;
+        right: 16px;
+    }
+    #download_btn {
+        bottom: 16px;
+        left: 16px;
+        right: auto;
+    }
+}
