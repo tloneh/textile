@@ -135,8 +135,9 @@ html, body {
 
 /* ==================== 右侧：编辑面板 ==================== */
 #editor-panel {
-    width: 22rem;
-    min-width: 20rem;
+    /* 12个全角字符宽度，含padding余量 */
+    width: 18.5em;
+    min-width: 18.5em;
     padding: 1.5rem 1rem;
     display: flex;
     flex-direction: column;
