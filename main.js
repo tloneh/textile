@@ -15,17 +15,17 @@ $(function () {
 
     // ==================== 初始化：绘制空网格 ====================
     drawEmptyGrid();
+    $(window).on('resize', drawEmptyGrid);
 
     function drawEmptyGrid() {
         var canvas = document.getElementById('grid-canvas');
         var wrapper = document.getElementById('grid-wrapper');
         if (!canvas || !wrapper) return;
 
-        // 外框固定大小范围：最小300px，最大560px
         var wrapperW = wrapper.clientWidth || 600;
         var wrapperH = wrapper.clientHeight || 600;
         var canvasSize = Math.min(wrapperW, wrapperH) * 0.75;
-        canvasSize = Math.max(300, Math.min(560, canvasSize));
+        canvasSize = Math.max(300, canvasSize);
         canvasSize = Math.floor(canvasSize);
 
         var gridCount = 30; // 默认30×30网格

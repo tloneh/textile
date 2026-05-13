@@ -11,6 +11,8 @@ html, body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background: #f5f5f5;
     color: #333;
+    /* 整体随浏览器宽度等比缩放：以1440px为基准 */
+    font-size: clamp(12px, 1.04vw, 20px);
 }
 
 /* ==================== 背景纹样层 ==================== */
@@ -29,11 +31,11 @@ html, body {
 /* ==================== 隐藏编辑栏按钮 ==================== */
 #toggle_editor_btn {
     position: fixed;
-    top: 16px;
-    right: 16px;
+    top: 1rem;
+    right: 1rem;
     z-index: 100;
-    padding: 6px 16px;
-    font-size: 13px;
+    padding: 0.4rem 1rem;
+    font-size: 0.87rem;
     color: #666;
     background: rgba(255,255,255,0.85);
     border: 1px solid #ddd;
@@ -73,12 +75,12 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 200px;
-    min-height: 200px;
+    min-width: 12.5rem;
+    min-height: 12.5rem;
     background: #f8f4f0;
     border: 1px solid #e0dcd8;
     border-radius: 4px;
-    padding: 16px;
+    padding: 1rem;
 }
 
 #grid-canvas {
@@ -102,22 +104,22 @@ html, body {
 
 #progress-box {
     text-align: center;
-    padding: 24px 40px;
+    padding: 1.5rem 2.5rem;
     background: #fff;
     border: 1px solid #ccc;
     border-radius: 4px;
-    min-width: 300px;
+    min-width: 18.75rem;
 }
 
 #progress-text {
-    font-size: 14px;
+    font-size: 0.93rem;
     color: #333;
-    margin-bottom: 12px;
+    margin-bottom: 0.75rem;
 }
 
 #progress-bar-bg {
     width: 100%;
-    height: 12px;
+    height: 0.75rem;
     background: #e0e0e0;
     border-radius: 0;
     overflow: hidden;
@@ -133,13 +135,13 @@ html, body {
 
 /* ==================== 右侧：编辑面板 ==================== */
 #editor-panel {
-    width: 260px;
-    min-width: 240px;
-    padding: 24px 16px;
+    width: 22rem;
+    min-width: 20rem;
+    padding: 1.5rem 1rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 16px;
+    gap: 1rem;
     background: transparent;
     border-left: none;
     transition: transform 0.35s ease, opacity 0.35s ease;
@@ -159,7 +161,7 @@ html, body {
 #editor-card {
     background: #fff;
     border-radius: 4px;
-    padding: 16px;
+    padding: 1rem;
     border: 1px solid #ccc;
 }
 
@@ -169,9 +171,9 @@ html, body {
 
 #text_input {
     width: 100%;
-    min-height: 160px;
-    padding: 12px;
-    font-size: 15px;
+    min-height: 10rem;
+    padding: 0.75rem;
+    font-size: 1rem;
     line-height: 1.7;
     border: none;
     background: transparent;
@@ -187,17 +189,17 @@ html, body {
 
 #char-count {
     position: absolute;
-    bottom: 4px;
-    right: 8px;
-    font-size: 11px;
+    bottom: 0.25rem;
+    right: 0.5rem;
+    font-size: 0.73rem;
     color: #ccc;
 }
 
 /* 转换按钮 */
 #convert_btn {
     width: 100%;
-    padding: 14px 0;
-    font-size: 15px;
+    padding: 0.9rem 0;
+    font-size: 1rem;
     font-weight: 500;
     color: #333;
     background: #fff;
@@ -220,11 +222,11 @@ html, body {
 /* ==================== 下载按钮 ==================== */
 #download_btn {
     position: fixed;
-    top: 68px;
-    right: 16px;
+    top: 4.25rem;
+    right: 1rem;
     z-index: 100;
-    padding: 6px 16px;
-    font-size: 13px;
+    padding: 0.4rem 1rem;
+    font-size: 0.87rem;
     color: #666;
     background: rgba(255,255,255,0.85);
     border: 1px solid #ddd;
@@ -253,7 +255,7 @@ html, body {
     #editor-panel {
         width: 100%;
         min-width: auto;
-        padding: 16px;
+        padding: 1rem;
         border-left: none;
         border-top: 1px solid #eee;
         max-height: 40vh;
@@ -267,12 +269,12 @@ html, body {
     }
     #toggle_editor_btn {
         top: auto;
-        bottom: 16px;
-        right: 16px;
+        bottom: 1rem;
+        right: 1rem;
     }
     #download_btn {
-        bottom: 16px;
-        left: 16px;
+        bottom: 1rem;
+        left: 1rem;
         right: auto;
     }
 }
