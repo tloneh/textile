@@ -13,6 +13,96 @@ $(function () {
     var currentAnalysis = null;
     var editorVisible = true;
 
+    // ==================== 探索页动画 ====================
+    initIntroAnimations();
+
+    // ==================== 封面进入按钮 ====================
+    $('#cover-enter-btn').on('click', function () {
+        $('#cover-page').addClass('fade-out');
+        setTimeout(function () {
+            $('#cover-page').remove();
+            $('#main-page').show();
+            drawEmptyGrid();
+        }, 600);
+    });
+
+    function initIntroAnimations() {
+        var coverPage = document.getElementById('cover-page');
+        var introPage = document.getElementById('intro-page');
+        if (!coverPage || !introPage) return;
+
+        initIntroFlowGrids();
+
+        var revealNodes = document.querySelectorAll('.intro-section, .intro-flow-row, .intro-gallery figure, #intro-action');
+        var lastScrollTop = coverPage.scrollTop;
+        coverPage.classList.add('scroll-down');
+
+        revealNodes.forEach(function (node, index) {
+            node.classList.add('intro-reveal');
+            node.style.setProperty('--delay', (index % 6) * 70 + 'ms');
+        });
+
+        if ('IntersectionObserver' in window) {
+            var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    } else {
+                        entry.target.classList.remove('is-visible');
+                    }
+                });
+            }, {
+                root: coverPage,
+                threshold: 0.16,
+                rootMargin: '-6% 0px -10% 0px'
+            });
+
+            revealNodes.forEach(function (node) {
+                observer.observe(node);
+            });
+        } else {
+            revealNodes.forEach(function (node) {
+                node.classList.add('is-visible');
+            });
+        }
+
+        coverPage.addEventListener('scroll', function () {
+            var currentScrollTop = coverPage.scrollTop;
+            var isScrollingDown = currentScrollTop >= lastScrollTop;
+            coverPage.classList.toggle('scroll-down', isScrollingDown);
+            coverPage.classList.toggle('scroll-up', !isScrollingDown);
+            lastScrollTop = Math.max(0, currentScrollTop);
+
+            var progress = Math.min(1, currentScrollTop / 700);
+            introPage.style.setProperty('--intro-scroll', progress);
+        }, { passive: true });
+    }
+
+    function initIntroFlowGrids() {
+        var text = '空山新雨后天气晚来秋明月松间照清泉石上流竹喧归浣女莲动下渔舟随意春芳歇王孙自可留';
+        var highlights = {
+            subject: [5, 6, 10, 11, 15, 16, 20, 23, 24, 28, 29, 32, 33, 35, 36],
+            predicate: [9, 14, 19, 21, 22, 26, 27, 34, 35, 36],
+            object: [0, 1, 3, 7, 8, 9, 10, 11, 16, 20, 21, 25, 26],
+            emotion: [0, 1, 2, 3, 10, 11, 15, 16, 20, 21, 25, 26]
+        };
+
+        document.querySelectorAll('.flow-matrix-card').forEach(function (card) {
+            var type = card.getAttribute('data-flow');
+            var grid = card.querySelector('.flow-grid');
+            if (!grid || grid.childElementCount) return;
+
+            for (var i = 0; i < text.length; i++) {
+                var cell = document.createElement('span');
+                cell.textContent = text.charAt(i);
+                if ((highlights[type] || []).indexOf(i) !== -1) {
+                    cell.className = 'on';
+                }
+                grid.appendChild(cell);
+            }
+        });
+    }
+
     // ==================== 初始化：绘制空网格 ====================
     drawEmptyGrid();
     $(window).on('resize', drawEmptyGrid);
@@ -163,6 +253,7 @@ $(function () {
                                 'background-image': 'url(' + bgDataURL + ')',
                                 'opacity': 1
                             });
+                            $('#main-page').addClass('has-pattern');
                         } catch (e) {
                             // 背景纹样生成失败不影响主功能
                         }
