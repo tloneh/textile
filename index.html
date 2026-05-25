@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="style.css" type="text/css">
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<title>织语 — 文字转织物纹样</title>
+<title>文纹Text-Texture</title>
 </head>
 <body>
 
@@ -16,24 +16,7 @@
 			<div id="intro-logo-wrap">
 				<img id="cover-logo" src="logo.png" alt="文纹 Text-Texture">
 			</div>
-			<div id="intro-pattern-grid" aria-label="纹样示例">
-				<img src="intro-assets/pattern-01.png" alt="">
-				<img src="intro-assets/pattern-02.png" alt="">
-				<img src="intro-assets/pattern-03.png" alt="">
-				<img src="intro-assets/pattern-04.png" alt="">
-				<img src="intro-assets/pattern-05.png" alt="">
-				<img src="intro-assets/pattern-06.png" alt="">
-				<img src="intro-assets/pattern-07.png" alt="">
-				<img src="intro-assets/pattern-08.png" alt="">
-				<img src="intro-assets/pattern-09.png" alt="">
-				<img src="intro-assets/pattern-10.png" alt="">
-				<img src="intro-assets/pattern-11.png" alt="">
-				<img src="intro-assets/pattern-12.png" alt="">
-				<img src="intro-assets/pattern-13.png" alt="">
-				<img src="intro-assets/pattern-14.png" alt="">
-				<img src="intro-assets/pattern-15.png" alt="">
-				<img src="intro-assets/pattern-16.png" alt="">
-			</div>
+			<img id="intro-pattern-sheet" src="intro-design/pattern-sheet.png" alt="纹样示例">
 		</header>
 
 		<main id="intro-content">
@@ -47,43 +30,20 @@
 			<section class="intro-section">
 				<h2>文字生纹</h2>
 				<p>从文本中的“音、形、意”出发，将声调、句子长度、段落结构、情感词和色彩意象转化为纹样生成参数。文字中的节奏被转换成重复，句式结构影响图案的疏密，情感和意象则影响色彩倾向。</p>
-				<div class="intro-flow-row">
-					<div class="flow-poem" aria-label="示例文本">
-						<span>空山新雨后，</span>
-						<span>天气晚来秋。</span>
-						<span>明月松间照，</span>
-						<span>清泉石上流。</span>
-						<span>竹喧归浣女，</span>
-						<span>莲动下渔舟。</span>
-						<span>随意春芳歇，</span>
-						<span>王孙自可留。</span>
-					</div>
-					<div class="flow-matrix-card" data-flow="subject"><div class="flow-grid"></div><span>主语</span></div>
-					<div class="flow-matrix-card" data-flow="predicate"><div class="flow-grid"></div><span>谓语</span></div>
-					<div class="flow-matrix-card" data-flow="object"><div class="flow-grid"></div><span>宾语</span></div>
-					<div class="flow-matrix-card" data-flow="emotion"><div class="flow-grid"></div><span>情感色彩</span></div>
-					<div class="flow-tone">1 1 1 3 4<br>1 4 3 2 1<br>2 4 1 1 4<br>1 2 2 4 1<br>2 1 1 4 3<br>2 4 4 1 1<br>2 1 4 1 1<br>2 1 4 2 2<span>声调</span></div>
-				</div>
+				<img class="intro-flow-sheet" src="intro-design/flow-map.png" alt="文字生纹映射示例">
 				<p>不同文本会留下不同的视觉痕迹。春天、花、光等意象可能生成明亮柔和的色调；海、水、雪等意象可能形成偏冷、沉静的色彩；重复出现的词句会在图案中形成循环节奏。</p>
 			</section>
 
-			<section class="intro-gallery">
-				<figure><img src="intro-assets/pattern-07.png" alt="天苍苍，野茫茫，风吹草低见牛羊"><figcaption>天苍苍，野茫茫，风吹草低见牛羊</figcaption></figure>
-				<figure><img src="intro-assets/pattern-15.png" alt="采菊东篱下，悠然见南山"><figcaption>采菊东篱下，悠然见南山</figcaption></figure>
-				<figure><img src="intro-assets/pattern-04.png" alt="下午好，今天是晴朗的日子"><figcaption>下午好，今天是晴朗的日子</figcaption></figure>
-				<figure><img src="intro-assets/pattern-12.png" alt="乱花渐欲迷人眼，浅草才能没马蹄"><figcaption>乱花渐欲迷人眼，浅草才能没马蹄</figcaption></figure>
-				<figure><img src="intro-assets/pattern-13.png" alt="我爱你我爱你我爱你"><figcaption>我爱你我爱你我爱你</figcaption></figure>
-				<figure><img src="intro-assets/pattern-08.png" alt="我的存在，对于我是永久的神奇，这就是生活"><figcaption>我的存在，对于我是永久的神奇，这就是生活</figcaption></figure>
+			<section class="intro-gallery-sheet-wrap">
+				<img class="intro-gallery-sheet" src="intro-design/examples.png" alt="文字与对应纹样示例">
 			</section>
 
 			<section id="intro-action">
 				<p>输入一段文字，观察它如何在经纬之间生成独有的纹样。</p>
-				<button id="cover-enter-btn">开始探索</button>
+				<button id="cover-enter-btn" aria-label="开始探索"><img src="intro-design/start-button.png" alt="开始探索"></button>
 			</section>
 		</main>
-		<div class="intro-pixels intro-pixels-left"></div>
-		<div class="intro-pixels intro-pixels-right"></div>
-		<p id="intro-footer">Text-texture</p>
+		<img id="intro-footer-art" src="intro-design/footer.png" alt="Text-Texture">
 	</div>
 </div>
 

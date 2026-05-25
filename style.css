@@ -1,3 +1,11 @@
+@font-face {
+    font-family: "MiSans-Regular";
+    src: url("MiSans-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -8,7 +16,7 @@ html, body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: "MiSans-Regular", "MiSans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background: #f5f5f5;
     color: #333;
     /* 整体随浏览器宽度等比缩放：以1440px为基准 */
@@ -308,56 +316,46 @@ html, body {
 }
 
 #intro-hero {
-    display: grid;
-    grid-template-columns: minmax(10rem, 18rem) 1fr;
-    gap: 2.2rem;
-    align-items: start;
+    position: relative;
     min-height: 34rem;
 }
 
 #intro-logo-wrap {
-    padding-top: 0.2rem;
+    position: absolute;
+    top: 0.1rem;
+    left: -0.9rem;
+    z-index: 2;
+    pointer-events: none;
 }
 
 #cover-logo {
     display: block;
-    width: 18rem;
-    max-width: 100%;
+    width: 24rem;
+    max-width: none;
     height: auto;
 }
 
-#intro-logo-wrap {
-    min-height: 28rem;
-}
-
-#intro-pattern-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 5.8rem);
-    gap: 1.3rem 1.8rem;
-    justify-content: end;
-    padding-top: 3.2rem;
-}
-
-#intro-pattern-grid img,
-.intro-gallery img {
+#intro-pattern-sheet {
+    position: absolute;
+    top: 2.5rem;
+    right: 0.5rem;
+    z-index: 1;
     display: block;
-    width: 100%;
+    width: 38rem;
     height: auto;
-    background: #fff;
-    border: 1px solid #ece3e3;
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
+    pointer-events: none;
 }
 
 #intro-content {
-    width: min(100%, 42rem);
+    width: min(100%, 58rem);
     margin: 0 auto;
 }
 
 .intro-mark-logo {
     display: block;
-    width: 4.6rem;
+    width: 6.2rem;
     height: auto;
+    margin-left: -0.7rem;
     margin-bottom: 2.6rem;
 }
 
@@ -387,6 +385,14 @@ html, body {
     align-items: start;
     justify-content: center;
     margin: 1.5rem auto 1.35rem;
+}
+
+.intro-flow-sheet {
+    display: block;
+    width: 39.5rem;
+    max-width: 100%;
+    height: auto;
+    margin: 1.35rem auto 1.35rem;
 }
 
 .flow-poem {
@@ -459,20 +465,17 @@ html, body {
     margin: 3.6rem auto 4.7rem;
 }
 
-.intro-gallery figure {
+.intro-gallery-sheet-wrap {
+    margin: 3.4rem auto 4.6rem;
     text-align: center;
 }
 
-.intro-gallery img {
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-}
-
-.intro-gallery figcaption {
-    margin-top: 0.55rem;
-    font-size: 0.55rem;
-    color: #333;
-    line-height: 1.45;
+.intro-gallery-sheet {
+    display: block;
+    width: 41rem;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
 }
 
 #intro-action {
@@ -486,61 +489,31 @@ html, body {
 }
 
 #cover-enter-btn {
-    position: relative;
-    overflow: hidden;
-    padding: 0.62rem 1.85rem;
-    font-size: 0.95rem;
-    color: #111;
-    background: #fff;
-    border: 1.5px solid #111;
-    border-radius: 2rem;
+    display: block;
+    width: 11rem;
+    height: auto;
+    margin: 0 auto;
+    padding: 0;
+    background: transparent;
+    border: none;
     cursor: pointer;
-    transition: transform 0.25s ease, color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
-    animation: introButtonPulse 2.6s ease-in-out infinite;
 }
-#cover-enter-btn::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -140%;
-    width: 80%;
-    height: 100%;
-    background: linear-gradient(110deg, transparent, rgba(255,255,255,0.85), transparent);
-    transform: skewX(-20deg);
-    transition: left 0.65s ease;
-}
-#cover-enter-btn:hover {
-    background: #111;
-    color: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 0.9rem 2rem rgba(0,0,0,0.12);
-}
-#cover-enter-btn:hover::after {
-    left: 150%;
+#cover-enter-btn img {
+    display: block;
+    width: 100%;
+    height: auto;
 }
 
-#intro-footer {
+#intro-footer-art {
     position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 2rem;
-    text-align: center;
-    font-size: 0.78rem;
-    color: rgba(215, 160, 160, 0.22);
+    left: 50%;
+    bottom: 0;
+    width: 54rem;
+    max-width: 100%;
+    height: auto;
+    transform: translateX(-50%);
+    pointer-events: none;
 }
-
-.intro-pixels {
-    position: absolute;
-    bottom: 0.7rem;
-    width: 7.5rem;
-    height: 7.5rem;
-    opacity: 0.13;
-    background-size: 1.55rem 1.55rem;
-    background-image: linear-gradient(45deg, #d8a9bf 25%, transparent 25%, transparent 75%, #d8a9bf 75%), linear-gradient(45deg, #d8a9bf 25%, transparent 25%, transparent 75%, #d8a9bf 75%);
-    background-position: 0 0, 0.78rem 0.78rem;
-}
-.intro-pixels-left { left: -0.8rem; }
-.intro-pixels-right { right: -0.8rem; }
 
 #cover-page.fade-out {
     opacity: 0;
@@ -727,6 +700,42 @@ html, body {
     }
 }
 
+/* 探索页按设计稿保持静态：取消浮动、悬停位移和光效 */
+#cover-page::before {
+    display: none;
+}
+#cover-logo,
+.intro-mark-logo,
+#intro-pattern-sheet,
+.intro-flow-sheet,
+.intro-gallery-sheet,
+#cover-enter-btn,
+#intro-footer-art {
+    animation: none !important;
+}
+#intro-pattern-sheet,
+.intro-flow-sheet,
+.intro-gallery-sheet,
+.intro-reveal,
+.intro-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+}
+#intro-pattern-sheet:hover,
+.intro-flow-sheet:hover,
+.intro-gallery-sheet:hover,
+#cover-enter-btn:hover {
+    transform: none;
+    box-shadow: none;
+    filter: none;
+}
+#cover-enter-btn:hover {
+    background: transparent;
+    color: #111;
+}
+
 /* ==================== 主界面 Logo 图案 ==================== */
 #main-logo {
     position: fixed;
@@ -783,21 +792,19 @@ html, body {
         padding: 1rem 0.75rem 5.5rem;
     }
     #intro-hero {
-        grid-template-columns: 1fr;
-        gap: 1.2rem;
-        min-height: auto;
+        min-height: 25rem;
     }
     #cover-logo {
-        width: 12.5rem;
+        width: 16rem;
     }
     #intro-logo-wrap {
-        min-height: 12rem;
+        top: 0;
+        left: -0.8rem;
     }
-    #intro-pattern-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.75rem;
-        justify-content: stretch;
-        padding-top: 0;
+    #intro-pattern-sheet {
+        top: 0.55rem;
+        right: 0;
+        width: 25rem;
     }
     #intro-content {
         width: 100%;
