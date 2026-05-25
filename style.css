@@ -307,12 +307,13 @@ html, body {
 
 #intro-page {
     position: relative;
-    width: min(100%, 86rem);
+    width: min(100vw, 86rem);
     min-height: 120rem;
     margin: 0 auto;
     padding: 2.1rem 2rem 6rem;
     background: #fff;
     color: #111;
+    overflow-x: hidden;
 }
 
 #intro-hero {
@@ -330,8 +331,8 @@ html, body {
 
 #cover-logo {
     display: block;
-    width: 54rem;
-    max-width: none;
+    width: min(54rem, calc(100vw - 4rem));
+    max-width: 100%;
     height: auto;
 }
 
@@ -341,7 +342,8 @@ html, body {
     right: 0;
     z-index: 1;
     display: block;
-    width: 56rem;
+    width: min(56rem, calc(100vw - 4rem));
+    max-width: 100%;
     height: auto;
     pointer-events: none;
 }
@@ -366,7 +368,8 @@ html, body {
 .intro-text-image {
     position: relative;
     display: block;
-    width: min(100%, 58rem);
+    width: min(58rem, calc(100vw - 4rem));
+    max-width: 100%;
     height: auto;
     margin: 0 auto 1.6rem;
 }
@@ -411,7 +414,7 @@ html, body {
 
 .intro-flow-sheet {
     display: block;
-    width: 56rem;
+    width: min(56rem, calc(100vw - 4rem));
     max-width: 100%;
     height: auto;
     margin: 1.6rem auto 1.6rem;
@@ -494,7 +497,7 @@ html, body {
 
 .intro-gallery-sheet {
     display: block;
-    width: 58rem;
+    width: min(58rem, calc(100vw - 4rem));
     max-width: 100%;
     height: auto;
     margin: 0 auto;
