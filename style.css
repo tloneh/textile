@@ -330,14 +330,14 @@ html, body {
 
 #cover-logo {
     display: block;
-    width: min(82vw, 42rem);
+    width: 54rem;
     max-width: none;
     height: auto;
 }
 
 #intro-pattern-sheet {
     position: absolute;
-    top: 2.5rem;
+    top: 5rem;
     right: 0;
     z-index: 1;
     display: block;
@@ -353,7 +353,7 @@ html, body {
 
 .intro-mark-logo {
     display: block;
-    width: 6.2rem;
+    width: 10rem;
     height: auto;
     margin-left: -0.7rem;
     margin-bottom: 2.6rem;
@@ -363,19 +363,41 @@ html, body {
     margin-bottom: 2.2rem;
 }
 
+.intro-text-image {
+    position: relative;
+    display: block;
+    width: min(100%, 58rem);
+    height: auto;
+    margin: 0 auto 1.6rem;
+}
+
+.intro-text-image--pattern {
+    left: -0.55rem;
+}
+
 .intro-section h2 {
-    margin-bottom: 0.95rem;
+    width: min(100%, 42rem);
+    margin: 0 auto 0.95rem;
     font-size: 1.18rem;
     line-height: 1.2;
     font-weight: 700;
 }
 
-.intro-section p,
-#intro-action p {
+.intro-section p {
+    width: min(100%, 42rem);
+    margin-left: auto;
+    margin-right: auto;
     font-size: 0.9rem;
     line-height: 1.85;
     color: #222;
     text-align: justify;
+}
+
+#intro-action p {
+    font-size: 0.9rem;
+    line-height: 1.85;
+    color: #222;
+    text-align: center;
 }
 
 .intro-flow-row {

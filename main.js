@@ -33,7 +33,7 @@ $(function () {
 
         initIntroFlowGrids();
 
-        var revealNodes = document.querySelectorAll('#intro-pattern-sheet, .intro-mark-logo, .intro-section h2, .intro-section p, .intro-flow-sheet, .intro-gallery-sheet-wrap, #intro-action p, #cover-enter-btn');
+        var revealNodes = document.querySelectorAll('#intro-pattern-sheet, .intro-mark-logo, .intro-text-image, .intro-flow-sheet, .intro-gallery-sheet-wrap, #intro-action p, #cover-enter-btn');
         var lastScrollTop = coverPage.scrollTop;
         coverPage.classList.add('scroll-down');
         coverPage.classList.toggle('has-scrolled', lastScrollTop > 4);
