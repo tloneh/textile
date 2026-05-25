@@ -307,17 +307,17 @@ html, body {
 
 #intro-page {
     position: relative;
-    width: min(100%, 54rem);
-    min-height: 115rem;
+    width: min(100%, 86rem);
+    min-height: 120rem;
     margin: 0 auto;
-    padding: 2.1rem 1.15rem 6rem;
+    padding: 2.1rem 2rem 6rem;
     background: #fff;
     color: #111;
 }
 
 #intro-hero {
     position: relative;
-    min-height: 34rem;
+    min-height: 60rem;
 }
 
 #intro-logo-wrap {
@@ -330,7 +330,7 @@ html, body {
 
 #cover-logo {
     display: block;
-    width: 24rem;
+    width: min(82vw, 42rem);
     max-width: none;
     height: auto;
 }
@@ -338,16 +338,16 @@ html, body {
 #intro-pattern-sheet {
     position: absolute;
     top: 2.5rem;
-    right: 0.5rem;
+    right: 0;
     z-index: 1;
     display: block;
-    width: 38rem;
+    width: 56rem;
     height: auto;
     pointer-events: none;
 }
 
 #intro-content {
-    width: min(100%, 58rem);
+    width: min(100%, 72rem);
     margin: 0 auto;
 }
 
@@ -364,15 +364,15 @@ html, body {
 }
 
 .intro-section h2 {
-    margin-bottom: 0.85rem;
-    font-size: 1.05rem;
+    margin-bottom: 0.95rem;
+    font-size: 1.18rem;
     line-height: 1.2;
     font-weight: 700;
 }
 
 .intro-section p,
 #intro-action p {
-    font-size: 0.78rem;
+    font-size: 0.9rem;
     line-height: 1.85;
     color: #222;
     text-align: justify;
@@ -389,10 +389,10 @@ html, body {
 
 .intro-flow-sheet {
     display: block;
-    width: 39.5rem;
+    width: 56rem;
     max-width: 100%;
     height: auto;
-    margin: 1.35rem auto 1.35rem;
+    margin: 1.6rem auto 1.6rem;
 }
 
 .flow-poem {
@@ -472,7 +472,7 @@ html, body {
 
 .intro-gallery-sheet {
     display: block;
-    width: 41rem;
+    width: 58rem;
     max-width: 100%;
     height: auto;
     margin: 0 auto;
@@ -700,28 +700,22 @@ html, body {
     }
 }
 
-/* 探索页按设计稿保持静态：取消浮动、悬停位移和光效 */
-#cover-page::before {
+/* 探索页保留滚动引入/引出，取消悬浮、呼吸光效和 hover 位移 */
+#cover-page::before,
+#intro-page::before {
     display: none;
 }
 #cover-logo,
-.intro-mark-logo,
-#intro-pattern-sheet,
-.intro-flow-sheet,
-.intro-gallery-sheet,
 #cover-enter-btn,
 #intro-footer-art {
     animation: none !important;
 }
-#intro-pattern-sheet,
-.intro-flow-sheet,
-.intro-gallery-sheet,
-.intro-reveal,
-.intro-reveal.is-visible {
-    opacity: 1;
-    transform: none;
-    filter: none;
-    transition: none;
+
+/* 初始只显示文纹 logo；轻微滚动后，纹样示例按原位置淡入 */
+#cover-page:not(.has-scrolled) #intro-pattern-sheet {
+    opacity: 0;
+    transform: translateY(1.2rem) scale(0.99);
+    filter: blur(3px);
 }
 #intro-pattern-sheet:hover,
 .intro-flow-sheet:hover,
@@ -792,10 +786,10 @@ html, body {
         padding: 1rem 0.75rem 5.5rem;
     }
     #intro-hero {
-        min-height: 25rem;
+        min-height: 34rem;
     }
     #cover-logo {
-        width: 16rem;
+        width: min(84vw, 30rem);
     }
     #intro-logo-wrap {
         top: 0;
@@ -804,7 +798,7 @@ html, body {
     #intro-pattern-sheet {
         top: 0.55rem;
         right: 0;
-        width: 25rem;
+        width: 32rem;
     }
     #intro-content {
         width: 100%;

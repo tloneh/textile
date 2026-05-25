@@ -33,9 +33,10 @@ $(function () {
 
         initIntroFlowGrids();
 
-        var revealNodes = document.querySelectorAll('.intro-section, .intro-flow-row, .intro-gallery figure, #intro-action');
+        var revealNodes = document.querySelectorAll('#intro-pattern-sheet, .intro-mark-logo, .intro-section h2, .intro-section p, .intro-flow-sheet, .intro-gallery-sheet-wrap, #intro-action p, #cover-enter-btn');
         var lastScrollTop = coverPage.scrollTop;
         coverPage.classList.add('scroll-down');
+        coverPage.classList.toggle('has-scrolled', lastScrollTop > 4);
 
         revealNodes.forEach(function (node, index) {
             node.classList.add('intro-reveal');
@@ -53,8 +54,8 @@ $(function () {
                 });
             }, {
                 root: coverPage,
-                threshold: 0.16,
-                rootMargin: '-6% 0px -10% 0px'
+                threshold: 0.01,
+                rootMargin: '0px'
             });
 
             revealNodes.forEach(function (node) {
@@ -71,6 +72,7 @@ $(function () {
             var isScrollingDown = currentScrollTop >= lastScrollTop;
             coverPage.classList.toggle('scroll-down', isScrollingDown);
             coverPage.classList.toggle('scroll-up', !isScrollingDown);
+            coverPage.classList.toggle('has-scrolled', currentScrollTop > 4);
             lastScrollTop = Math.max(0, currentScrollTop);
 
             var progress = Math.min(1, currentScrollTop / 700);
