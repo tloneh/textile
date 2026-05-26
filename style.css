@@ -50,10 +50,10 @@ html, body {
     z-index: 100;
     padding: 0.4rem 1rem;
     font-size: 0.87rem;
-    color: #666;
+    color: #111;
     background: rgba(255,255,255,0.85);
-    border: 1px solid #ddd;
-    border-radius: 20px;
+    border: 1.5px solid rgba(0,0,0,0.75);
+    border-radius: 999px;
     cursor: pointer;
     backdrop-filter: blur(8px);
     transition: all 0.2s ease;
@@ -175,9 +175,9 @@ html, body {
 
 #editor-card {
     background: #fff;
-    border-radius: 4px;
+    border-radius: 0.9rem;
     padding: 1rem;
-    border: 1px solid #ccc;
+    border: 1.5px solid rgba(0,0,0,0.75);
 }
 
 #textarea-wrapper {
@@ -217,10 +217,10 @@ html, body {
     padding: 0.9rem 0;
     font-size: 1rem;
     font-weight: 500;
-    color: #333;
+    color: #111;
     background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 20px;
+    border: 1.5px solid rgba(0,0,0,0.75);
+    border-radius: 999px;
     cursor: pointer;
     transition: all 0.2s ease;
     letter-spacing: 2px;
@@ -243,10 +243,10 @@ html, body {
     z-index: 100;
     padding: 0.4rem 1rem;
     font-size: 0.87rem;
-    color: #666;
+    color: #111;
     background: rgba(255,255,255,0.85);
-    border: 1px solid #ddd;
-    border-radius: 20px;
+    border: 1.5px solid rgba(0,0,0,0.75);
+    border-radius: 999px;
     cursor: pointer;
     backdrop-filter: blur(8px);
     transition: all 0.2s ease;
@@ -350,15 +350,15 @@ html, body {
 }
 
 #intro-content {
-    width: min(100%, 72rem);
-    margin: 0 auto;
+    width: 100%;
+    margin: 0;
 }
 
 .intro-mark-logo {
     display: block;
     width: 10rem;
     height: auto;
-    margin-left: -0.7rem;
+    margin-left: 0;
     margin-bottom: 2.6rem;
 }
 
@@ -368,6 +368,7 @@ html, body {
 
 .intro-text-image {
     position: relative;
+    left: -0.1em;
     display: block;
     width: min(58rem, calc(100vw - 4rem));
     max-width: 100%;
@@ -398,7 +399,7 @@ html, body {
 }
 
 #intro-action p {
-    font-size: 0.9rem;
+    font-size: 1.4rem;
     line-height: 1.85;
     color: #222;
     text-align: center;
@@ -414,6 +415,8 @@ html, body {
 }
 
 .intro-flow-sheet {
+    position: relative;
+    left: -0.4rem;
     display: block;
     width: min(56rem, calc(100vw - 4rem));
     max-width: 100%;
@@ -492,6 +495,8 @@ html, body {
 }
 
 .intro-gallery-sheet-wrap {
+    position: relative;
+    left: 1rem;
     margin: 3.4rem auto 4.6rem;
     text-align: center;
 }
@@ -506,12 +511,13 @@ html, body {
 
 #intro-action {
     text-align: center;
-    margin-top: 2rem;
+    margin-top: 6rem;
+    margin-bottom: 2rem;
 }
 
 #intro-action p {
     text-align: center;
-    margin-bottom: 1.6rem;
+    margin-bottom: 5rem;
 }
 
 #cover-enter-btn {
@@ -533,11 +539,24 @@ html, body {
 #intro-footer-art {
     position: absolute;
     left: 50%;
-    bottom: 0;
+    bottom: -7rem;
+    z-index: 1;
     width: 100vw;
     max-width: none;
     height: auto;
     transform: translateX(-50%);
+    pointer-events: none;
+}
+
+#developed-by {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6.1rem;
+    z-index: 2;
+    text-align: center;
+    font-size: 0.78rem;
+    color: rgba(0,0,0,0.28);
     pointer-events: none;
 }
 
