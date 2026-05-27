@@ -12,6 +12,180 @@
 $(function () {
     var currentAnalysis = null;
     var editorVisible = true;
+    var savedDirHandle = null;
+
+    // ==================== IndexedDB 保存文件夹句柄逻辑 ====================
+    var DB_NAME = 'TextileSaveDirDB';
+    var STORE_NAME = 'handles';
+    var KEY_NAME = 'save_dir_handle';
+
+    function getDB() {
+        return new Promise(function (resolve, reject) {
+            var request = indexedDB.open(DB_NAME, 1);
+            request.onupgradeneeded = function (e) {
+                var db = e.target.result;
+                if (!db.objectStoreNames.contains(STORE_NAME)) {
+                    db.createObjectStore(STORE_NAME);
+                }
+            };
+            request.onsuccess = function (e) {
+                resolve(e.target.result);
+            };
+            request.onerror = function (e) {
+                reject(e.target.error);
+            };
+        });
+    }
+
+    function saveDirHandle(handle) {
+        return getDB().then(function (db) {
+            return new Promise(function (resolve, reject) {
+                var tx = db.transaction(STORE_NAME, 'readwrite');
+                var store = tx.objectStore(STORE_NAME);
+                var req = store.put(handle, KEY_NAME);
+                req.onsuccess = function () { resolve(); };
+                req.onerror = function () { reject(req.error); };
+            });
+        });
+    }
+
+    function loadDirHandle() {
+        return getDB().then(function (db) {
+            return new Promise(function (resolve, reject) {
+                var tx = db.transaction(STORE_NAME, 'readonly');
+                var store = tx.objectStore(STORE_NAME);
+                var req = store.get(KEY_NAME);
+                req.onsuccess = function () { resolve(req.result); };
+                req.onerror = function () { reject(req.error); };
+            });
+        }).catch(function () {
+            return null;
+        });
+    }
+
+    function verifyPermission(fileHandle, readWrite) {
+        var options = {};
+        if (readWrite) {
+            options.mode = 'readwrite';
+        }
+        return fileHandle.queryPermission(options).then(function (permission) {
+            if (permission === 'granted') {
+                return true;
+            }
+            return fileHandle.requestPermission(options).then(function (newPermission) {
+                return permission === 'granted' || newPermission === 'granted';
+            });
+        }).catch(function () {
+            return false;
+        });
+    }
+
+    function updateSaveDirBtnState() {
+        var btn = $('#save_dir_btn');
+        if (savedDirHandle) {
+            // 已选择默认保存文件夹：隐藏按钮，由 flex 容器自动重排其余按钮
+            btn.addClass('is-saved').removeClass('active').text('选择保存文件夹');
+        } else {
+            btn.removeClass('is-saved active').text('选择保存文件夹');
+        }
+    }
+
+    // 初始化：恢复已选择的保存文件夹
+    loadDirHandle().then(function (handle) {
+        if (handle) {
+            savedDirHandle = handle;
+            updateSaveDirBtnState();
+        }
+    });
+
+    // 绑定选择保存文件夹按钮事件
+    $('#save_dir_btn').on('click', function () {
+        if (!window.showDirectoryPicker) {
+            alert('您的浏览器不支持此功能。请使用 Chrome, Edge 或 Opera 等现代浏览器启用自动保存目录功能。');
+            return;
+        }
+        window.showDirectoryPicker({ mode: 'readwrite' }).then(function (handle) {
+            if (handle) {
+                verifyPermission(handle, true).then(function (hasPermission) {
+                    if (hasPermission) {
+                        savedDirHandle = handle;
+                        saveDirHandle(handle).then(function () {
+                            updateSaveDirBtnState();
+                            alert('成功关联保存文件夹: ' + handle.name + '\n此后每次“转换为纹样”都将自动静默保存生成的文件和日志到此文件夹。');
+                        });
+                    } else {
+                        alert('需要读写权限以进行自动保存。');
+                    }
+                });
+            }
+        }).catch(function (err) {
+            if (err.name !== 'AbortError') {
+                console.error(err);
+                alert('选择文件夹失败：' + err.message);
+            }
+        });
+    });
+
+    // 自动保存图片与日志函数
+    function autoSaveResult(text, analysis) {
+        if (!savedDirHandle) return;
+        verifyPermission(savedDirHandle, true).then(function (hasPermission) {
+            if (!hasPermission) {
+                console.warn('未获得保存目录读写权限，无法自动保存。');
+                return;
+            }
+
+            var timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            var safeText = text.substring(0, 10).replace(/[\\/:*?"<>|]/g, '_');
+
+            // 1. 保存图片
+            var canvas = document.getElementById('grid-canvas');
+            if (canvas) {
+                canvas.toBlob(function (blob) {
+                    if (blob) {
+                        var imgFileName = '纹样_' + safeText + '_' + timestamp + '.png';
+                        savedDirHandle.getFileHandle(imgFileName, { create: true }).then(function (imgFileHandle) {
+                            return imgFileHandle.createWritable().then(function (writable) {
+                                return writable.write(blob).then(function () {
+                                    return writable.close();
+                                });
+                            });
+                        }).then(function () {
+                            console.log('纹样图片自动保存成功:', imgFileName);
+                        }).catch(function (e) {
+                            console.error('保存纹样图片失败:', e);
+                        });
+                    }
+                }, 'image/png');
+            }
+
+            // 2. 保存日志数据
+            var logFileName = '记录_' + safeText + '_' + timestamp + '.json';
+            var logData = {
+                text: text,
+                timestamp: new Date().toLocaleString(),
+                analysis: {
+                    emotion: analysis.emotion,
+                    subject: analysis.subject,
+                    predicate: analysis.predicate,
+                    object: analysis.object,
+                    tones: analysis.tones
+                }
+            };
+            var logBlob = new Blob([JSON.stringify(logData, null, 4)], { type: 'application/json' });
+            savedDirHandle.getFileHandle(logFileName, { create: true }).then(function (logFileHandle) {
+                return logFileHandle.createWritable().then(function (writable) {
+                    return writable.write(logBlob).then(function () {
+                        return writable.close();
+                    });
+                });
+            }).then(function () {
+                console.log('数据记录日志自动保存成功:', logFileName);
+            }).catch(function (e) {
+                console.error('保存数据记录日志失败:', e);
+            });
+        });
+    }
 
     // ==================== 探索页动画 ====================
     initIntroAnimations();
@@ -20,7 +194,8 @@ $(function () {
     $('#cover-enter-btn').on('click', function () {
         $('#cover-page').addClass('fade-out');
         setTimeout(function () {
-            $('#cover-page').remove();
+            // 隐藏（保留 DOM）以便“返回主页”可重新显示
+            $('#cover-page').hide().removeClass('fade-out');
             $('#main-page').show();
             drawEmptyGrid();
         }, 600);
@@ -171,6 +346,53 @@ $(function () {
         }
     });
 
+    // ==================== 返回主页（回到前置探索封面，保留自动保存设置） ====================
+    $('#back_home_btn').on('click', function () {
+        // 清空输入与字数统计
+        $('#text_input').val('');
+        $('#char-count').text('0/200');
+
+        // 复位编辑栏显示
+        editorVisible = true;
+        $('#editor-panel').removeClass('hidden');
+        $('#toggle_editor_btn').text('隐藏编辑栏');
+
+        // 复位转换按钮状态
+        $('#convert_btn').prop('disabled', false).css('opacity', 1);
+
+        // 隐藏下载按钮
+        $('#download_btn').removeClass('visible');
+
+        // 关闭进度遮罩
+        $('#progress-overlay').hide();
+        $('#progress-bar-fill').css('width', '0%');
+        $('#progress-text').text('转换中……');
+
+        // 清除背景纹样与画布
+        $('#bg-pattern').css({ 'background-image': 'none', 'opacity': 0 });
+        $('#main-page').removeClass('has-pattern');
+        currentAnalysis = null;
+        drawEmptyGrid();
+
+        // 隐藏主界面，重新显示前置探索封面页
+        $('#main-page').hide();
+        var $cover = $('#cover-page');
+        if ($cover.length === 0) {
+            // 兜底：若封面 DOM 已被移除，则刷新页面
+            location.reload();
+            return;
+        }
+        $cover.removeClass('fade-out').show();
+
+        // 封面页滚动回顶部并复位动画状态
+        var coverEl = document.getElementById('cover-page');
+        if (coverEl) {
+            coverEl.scrollTop = 0;
+            coverEl.classList.remove('has-scrolled', 'scroll-up');
+            coverEl.classList.add('scroll-down');
+        }
+    });
+
     // ==================== 字数统计 ====================
     $('#text_input').on('input', function () {
         var text = $(this).val();
@@ -258,6 +480,15 @@ $(function () {
                             $('#main-page').addClass('has-pattern');
                         } catch (e) {
                             // 背景纹样生成失败不影响主功能
+                        }
+
+                        // 如果关联了保存文件夹，自动静默保存
+                        if (savedDirHandle) {
+                            try {
+                                autoSaveResult(text, currentAnalysis);
+                            } catch (e) {
+                                console.error('自动保存失败:', e);
+                            }
                         }
                     }, 400);
                 }

@@ -42,12 +42,19 @@ html, body {
     transition: opacity 0.6s ease;
 }
 
-/* ==================== 隐藏编辑栏按钮 ==================== */
-#toggle_editor_btn {
+/* ==================== 顶部操作按钮组 ==================== */
+#top-actions {
     position: fixed;
     top: 1rem;
     right: 1rem;
     z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+}
+
+#top-actions > button {
     padding: 0.4rem 1rem;
     font-size: 0.87rem;
     color: #111;
@@ -57,12 +64,32 @@ html, body {
     cursor: pointer;
     backdrop-filter: blur(8px);
     transition: all 0.2s ease;
+    font-family: inherit;
+    white-space: nowrap;
+    text-align: center;
 }
-#toggle_editor_btn:hover {
+
+#top-actions > button:hover {
     background: rgba(255,255,255,1);
     border-color: #bbb;
     color: #333;
 }
+
+/* 下载按钮：默认隐藏，转换完成后显示 */
+#download_btn {
+    display: none;
+}
+#download_btn.visible {
+    display: inline-block;
+}
+
+/* 保存文件夹按钮：选中后整个按钮隐藏（其余按钮自动重排） */
+#save_dir_btn.is-saved {
+    display: none;
+}
+
+/* ==================== 隐藏编辑栏按钮 ==================== */
+/* 旧的独立定位规则已移除，按钮样式由 #top-actions 统一接管 */
 
 /* ==================== 主体容器 ==================== */
 #app-container {
@@ -235,32 +262,19 @@ html, body {
     background: #eee;
 }
 
-/* ==================== 下载按钮 ==================== */
-#download_btn {
-    position: fixed;
-    top: 4.25rem;
-    right: 1rem;
-    z-index: 100;
-    padding: 0.4rem 1rem;
-    font-size: 0.87rem;
-    color: #111;
-    background: rgba(255,255,255,0.85);
-    border: 1.5px solid rgba(0,0,0,0.75);
-    border-radius: 999px;
-    cursor: pointer;
-    backdrop-filter: blur(8px);
-    transition: all 0.2s ease;
-    display: none;
+/* ==================== 下载按钮（位于 #top-actions 中，仅保留状态相关样式） ==================== */
+/* display 状态由 #top-actions 部分定义 */
+
+/* ==================== 自动保存按钮（位于 #top-actions 中） ==================== */
+/* 选中状态高亮（备用，按规则被选中后整体隐藏） */
+#save_dir_btn.active {
+    background: rgba(230, 245, 230, 0.85);
+    border-color: #2e7d32;
+    color: #2e7d32;
 }
 
-#download_btn:hover {
-    background: rgba(255,255,255,1);
-    border-color: #bbb;
-    color: #333;
-}
-
-#download_btn.visible {
-    display: block;
+#save_dir_btn.active:hover {
+    background: rgba(210, 240, 210, 1);
 }
 
 /* ==================== 响应式 ==================== */
@@ -283,15 +297,14 @@ html, body {
     #grid-wrapper {
         flex: 1;
     }
-    #toggle_editor_btn {
+    #top-actions {
         top: auto;
         bottom: 1rem;
         right: 1rem;
-    }
-    #download_btn {
-        bottom: 1rem;
-        left: 1rem;
-        right: auto;
+        left: auto;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
     }
 }
 
@@ -326,11 +339,13 @@ html, body {
     position: absolute;
     top: 0.1rem;
     left: 0;
-    z-index: 2;
+    z-index: 5;
     pointer-events: none;
 }
 
 #cover-logo {
+    position: relative;
+    z-index: 5;
     display: block;
     width: min(62rem, 92vw);
     max-width: none;
