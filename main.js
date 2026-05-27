@@ -208,10 +208,25 @@ $(function () {
 
         initIntroFlowGrids();
 
+        // 预解码所有探索页图片，避免动画首帧解码大图导致卡顿
+        var allImgs = coverPage.querySelectorAll('img');
+        allImgs.forEach(function (img) {
+            if (img.decode) {
+                if (img.complete) {
+                    img.decode().catch(function () {});
+                } else {
+                    img.addEventListener('load', function () {
+                        img.decode && img.decode().catch(function () {});
+                    }, { once: true });
+                }
+            }
+        });
+
         var revealNodes = document.querySelectorAll('#intro-pattern-sheet, .intro-mark-logo, .intro-text-image, .intro-flow-sheet, .intro-gallery-sheet-wrap, #intro-action p, #cover-enter-btn');
         var lastScrollTop = coverPage.scrollTop;
-        coverPage.classList.add('scroll-down');
-        coverPage.classList.toggle('has-scrolled', lastScrollTop > 4);
+        var scrollTicking = false;
+        var lastHasScrolled = lastScrollTop > 4;
+        coverPage.classList.toggle('has-scrolled', lastHasScrolled);
 
         revealNodes.forEach(function (node, index) {
             node.classList.add('intro-reveal');
@@ -243,15 +258,23 @@ $(function () {
         }
 
         coverPage.addEventListener('scroll', function () {
-            var currentScrollTop = coverPage.scrollTop;
-            var isScrollingDown = currentScrollTop >= lastScrollTop;
-            coverPage.classList.toggle('scroll-down', isScrollingDown);
-            coverPage.classList.toggle('scroll-up', !isScrollingDown);
-            coverPage.classList.toggle('has-scrolled', currentScrollTop > 4);
-            lastScrollTop = Math.max(0, currentScrollTop);
+            if (scrollTicking) return;
+            scrollTicking = true;
+            requestAnimationFrame(function () {
+                var currentScrollTop = coverPage.scrollTop;
+                var willHasScrolled = currentScrollTop > 4;
 
-            var progress = Math.min(1, currentScrollTop / 700);
-            introPage.style.setProperty('--intro-scroll', progress);
+                if (willHasScrolled !== lastHasScrolled) {
+                    coverPage.classList.toggle('has-scrolled', willHasScrolled);
+                    lastHasScrolled = willHasScrolled;
+                }
+
+                var progress = Math.min(1, currentScrollTop / 700);
+                introPage.style.setProperty('--intro-scroll', progress);
+
+                lastScrollTop = Math.max(0, currentScrollTop);
+                scrollTicking = false;
+            });
         }, { passive: true });
     }
 

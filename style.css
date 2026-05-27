@@ -655,23 +655,21 @@ html, body {
 }
 
 .intro-reveal {
-    --reveal-offset: 1.6rem;
     opacity: 0;
-    transform: translateY(var(--reveal-offset)) scale(0.98);
-    filter: blur(3px);
-    transition: opacity 0.62s ease var(--delay, 0ms), transform 0.62s cubic-bezier(.2,.8,.2,1) var(--delay, 0ms), filter 0.62s ease var(--delay, 0ms);
-    will-change: opacity, transform, filter;
-}
-#cover-page.scroll-down .intro-reveal:not(.is-visible) {
-    --reveal-offset: 1.8rem;
-}
-#cover-page.scroll-up .intro-reveal:not(.is-visible) {
-    --reveal-offset: -1.8rem;
+    transform: translateY(1.2rem);
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--delay, 0ms);
 }
 .intro-reveal.is-visible {
     opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0);
+    transform: translateY(0);
+}
+
+/* 大图（纹样/流程/示例）首次进入视口时禁用任何额外滤镜，避免逐帧光栅化导致卡顿 */
+#intro-pattern-sheet.intro-reveal,
+.intro-flow-sheet.intro-reveal,
+.intro-gallery-sheet-wrap.intro-reveal {
+    contain: layout paint;
 }
 
 .intro-section h2::after {
