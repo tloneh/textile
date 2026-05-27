@@ -225,12 +225,12 @@ $(function () {
         var revealNodes = document.querySelectorAll('#intro-pattern-sheet, .intro-mark-logo, .intro-text-image, .intro-flow-sheet, .intro-gallery-sheet-wrap, #intro-action p, #cover-enter-btn');
         var lastScrollTop = coverPage.scrollTop;
         var scrollTicking = false;
-        var lastHasScrolled = lastScrollTop > 4;
+        var lastHasScrolled = lastScrollTop > 0;
         coverPage.classList.toggle('has-scrolled', lastHasScrolled);
 
         revealNodes.forEach(function (node, index) {
             node.classList.add('intro-reveal');
-            node.style.setProperty('--delay', (index % 6) * 70 + 'ms');
+            node.style.setProperty('--delay', (index % 6) * 35 + 'ms');
         });
 
         if ('IntersectionObserver' in window) {
@@ -244,7 +244,7 @@ $(function () {
                 });
             }, {
                 root: coverPage,
-                threshold: 0.01,
+                threshold: 0,
                 rootMargin: '0px'
             });
 
@@ -262,15 +262,12 @@ $(function () {
             scrollTicking = true;
             requestAnimationFrame(function () {
                 var currentScrollTop = coverPage.scrollTop;
-                var willHasScrolled = currentScrollTop > 4;
+                var willHasScrolled = currentScrollTop > 0;
 
                 if (willHasScrolled !== lastHasScrolled) {
                     coverPage.classList.toggle('has-scrolled', willHasScrolled);
                     lastHasScrolled = willHasScrolled;
                 }
-
-                var progress = Math.min(1, currentScrollTop / 700);
-                introPage.style.setProperty('--intro-scroll', progress);
 
                 lastScrollTop = Math.max(0, currentScrollTop);
                 scrollTicking = false;
