@@ -209,46 +209,72 @@ $(function () {
         initIntroFlowGrids();
 
         // 预解码所有探索页图片，避免动画首帧解码大图导致卡顿
+        // 优化后的图片加载策略（分优先级）
         var allImgs = coverPage.querySelectorAll('img');
-        var imgSrcs = [];
-        allImgs.forEach(function (img) {
-            var src = img.getAttribute('src');
-            if (src) imgSrcs.push(src);
+        
+        // 1. 关键图片（首屏可见）立即加载
+        var criticalImgs = Array.from(allImgs).filter(img => 
+            img.hasAttribute('fetchpriority') || 
+            img.id === 'cover-logo' || 
+            img.id === 'intro-pattern-sheet'
+        );
+        
+        criticalImgs.forEach(img => {
+            img.loading = 'eager';
+            img.style.willChange = 'opacity, transform';
+            
+            if (img.complete) {
+                img.decode && img.decode().catch(() => {});
+            } else {
+                img.addEventListener('load', function() {
+                    img.decode && img.decode().catch(() => {});
+                    img.style.opacity = '1';
+                }, { once: true });
+                
+                img.addEventListener('error', function() {
+                    img.style.opacity = '0';
+                    console.warn('图片加载失败:', img.src);
+                }, { once: true });
+                
+                // 初始隐藏，加载完成后显示
+                img.style.opacity = '0';
+                img.style.transition = 'opacity 0.3s ease';
+            }
         });
-
-        // 使用 fetch 强制立即下载所有图片（不依赖浏览器视口懒加载策略）
-        // 下载完成后调用 decode() 确保图片已解码就绪，滚动时无需再解码
-        imgSrcs.forEach(function (src) {
-            fetch(src, { mode: 'no-cors', cache: 'force-cache' })
-                .then(function () {
-                    // fetch 完成后，找到对应 img 元素并触发 decode
-                    allImgs.forEach(function (img) {
-                        if (img.getAttribute('src') === src && img.decode) {
-                            if (img.complete) {
-                                img.decode().catch(function () {});
-                            } else {
-                                img.addEventListener('load', function () {
-                                    img.decode && img.decode().catch(function () {});
-                                }, { once: true });
-                            }
+        
+        // 2. 非关键图片懒加载
+        var lazyImgs = Array.from(allImgs).filter(img => !criticalImgs.includes(img));
+        lazyImgs.forEach(img => {
+            img.loading = 'lazy';
+            if (img.complete && img.decode) {
+                img.decode().catch(() => {});
+            } else {
+                img.addEventListener('load', function() {
+                    img.decode && img.decode().catch(() => {});
+                }, { once: true });
+            }
+        });
+        
+        // 3. 使用IntersectionObserver优化视口内图片加载
+        if ('IntersectionObserver' in window) {
+            const imgObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (!img.complete) {
+                            img.loading = 'eager';
                         }
-                    });
-                })
-                .catch(function () {
-                    // fetch 失败时回退到原有 decode 逻辑
-                    allImgs.forEach(function (img) {
-                        if (img.getAttribute('src') === src && img.decode) {
-                            if (img.complete) {
-                                img.decode().catch(function () {});
-                            } else {
-                                img.addEventListener('load', function () {
-                                    img.decode && img.decode().catch(function () {});
-                                }, { once: true });
-                            }
-                        }
-                    });
+                        imgObserver.unobserve(img);
+                    }
                 });
-        });
+            }, { 
+                root: coverPage,
+                rootMargin: '200px 0px',
+                threshold: 0.01
+            });
+            
+            lazyImgs.forEach(img => imgObserver.observe(img));
+        }
 
         var revealNodes = document.querySelectorAll('#intro-pattern-sheet, .intro-mark-logo, .intro-text-image, .intro-flow-sheet, .intro-gallery-sheet-wrap, #intro-action p, #cover-enter-btn');
         var lastScrollTop = coverPage.scrollTop;
@@ -256,9 +282,14 @@ $(function () {
         var lastHasScrolled = lastScrollTop > 0;
         coverPage.classList.toggle('has-scrolled', lastHasScrolled);
 
+        // 优化动画性能（使用will-change和requestAnimationFrame）
         revealNodes.forEach(function (node, index) {
+            node.style.willChange = 'transform, opacity';
             node.classList.add('intro-reveal');
-            node.style.setProperty('--delay', (index % 6) * 35 + 'ms');
+            
+            requestAnimationFrame(() => {
+                node.style.setProperty('--delay', (index % 6) * 35 + 'ms');
+            });
         });
 
         if ('IntersectionObserver' in window) {

@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="style.css" type="text/css">
+<link rel="preload" href="logo.png" as="image" fetchpriority="high">
+<link rel="preload" href="intro-design/pattern-sheet.png" as="image" fetchpriority="high">
+<link rel="prefetch" href="intro-design/about-text.png" as="image">
+<link rel="prefetch" href="intro-design/text-pattern-text.png" as="image">
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <title>文纹Text-Texture</title>
 </head>
@@ -20,7 +24,7 @@
 		</header>
 
 		<main id="intro-content">
-			<img class="intro-mark-logo" src="logo.png" alt="文纹 Text-Texture" decoding="async" loading="eager">
+			<img class="intro-mark-logo intro-reveal" src="logo.png" alt="文纹 Text-Texture" decoding="async" loading="eager">
 
 			<section class="intro-section">
 				<img class="intro-text-image" src="intro-design/about-text.png" alt="关于本项目" decoding="async" loading="eager">
