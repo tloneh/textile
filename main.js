@@ -210,16 +210,44 @@ $(function () {
 
         // 预解码所有探索页图片，避免动画首帧解码大图导致卡顿
         var allImgs = coverPage.querySelectorAll('img');
+        var imgSrcs = [];
         allImgs.forEach(function (img) {
-            if (img.decode) {
-                if (img.complete) {
-                    img.decode().catch(function () {});
-                } else {
-                    img.addEventListener('load', function () {
-                        img.decode && img.decode().catch(function () {});
-                    }, { once: true });
-                }
-            }
+            var src = img.getAttribute('src');
+            if (src) imgSrcs.push(src);
+        });
+
+        // 使用 fetch 强制立即下载所有图片（不依赖浏览器视口懒加载策略）
+        // 下载完成后调用 decode() 确保图片已解码就绪，滚动时无需再解码
+        imgSrcs.forEach(function (src) {
+            fetch(src, { mode: 'no-cors', cache: 'force-cache' })
+                .then(function () {
+                    // fetch 完成后，找到对应 img 元素并触发 decode
+                    allImgs.forEach(function (img) {
+                        if (img.getAttribute('src') === src && img.decode) {
+                            if (img.complete) {
+                                img.decode().catch(function () {});
+                            } else {
+                                img.addEventListener('load', function () {
+                                    img.decode && img.decode().catch(function () {});
+                                }, { once: true });
+                            }
+                        }
+                    });
+                })
+                .catch(function () {
+                    // fetch 失败时回退到原有 decode 逻辑
+                    allImgs.forEach(function (img) {
+                        if (img.getAttribute('src') === src && img.decode) {
+                            if (img.complete) {
+                                img.decode().catch(function () {});
+                            } else {
+                                img.addEventListener('load', function () {
+                                    img.decode && img.decode().catch(function () {});
+                                }, { once: true });
+                            }
+                        }
+                    });
+                });
         });
 
         var revealNodes = document.querySelectorAll('#intro-pattern-sheet, .intro-mark-logo, .intro-text-image, .intro-flow-sheet, .intro-gallery-sheet-wrap, #intro-action p, #cover-enter-btn');

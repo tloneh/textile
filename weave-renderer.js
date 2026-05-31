@@ -1603,12 +1603,27 @@ function calcPixelSize(N) {
     if (!wrapper) return 4;
     var wrapperW = wrapper.clientWidth || 600;
     var wrapperH = wrapper.clientHeight || 600;
-    // 外框大小固定范围：300~560px
+    // 外框大小与 drawEmptyGrid / calcCanvasSize 保持一致
     var canvasSize = Math.min(wrapperW, wrapperH) * 0.75;
-    canvasSize = Math.max(300, Math.min(560, canvasSize));
+    canvasSize = Math.max(300, canvasSize);
+    canvasSize = Math.floor(canvasSize);
     // 格子大小 = 外框大小 / 字数，至少1px
     var size = Math.floor(canvasSize / N);
     return Math.max(1, size);
+}
+
+/**
+ * 计算与空网格一致的固定 canvas 尺寸
+ * 织物渲染时使用此值作为 canvas.width/height，确保显示边界与空网格完全相同
+ */
+function calcCanvasSize() {
+    var wrapper = document.getElementById('grid-wrapper');
+    if (!wrapper) return 450;
+    var wrapperW = wrapper.clientWidth || 600;
+    var wrapperH = wrapper.clientHeight || 600;
+    var canvasSize = Math.min(wrapperW, wrapperH) * 0.75;
+    canvasSize = Math.max(300, canvasSize);
+    return Math.floor(canvasSize);
 }
 
 /**
@@ -1657,6 +1672,7 @@ var LAYER_ORDER = ['object', 'subject', 'predicate', 'emotion', 'tone'];
 function renderCombinedOverlay(analysis, onProgress) {
     var N = analysis.charCount;
     var pixelSize = calcPixelSize(N);
+    var canvasSize = calcCanvasSize();
 
     var types = LAYER_ORDER;
     var grids = {};
@@ -1675,13 +1691,11 @@ function renderCombinedOverlay(analysis, onProgress) {
     }
 
     var canvas = document.getElementById('grid-canvas');
-    var canvasW = N * pixelSize;
-    var canvasH = N * pixelSize;
-    canvas.width = canvasW;
-    canvas.height = canvasH;
+    canvas.width = canvasSize;
+    canvas.height = canvasSize;
 
     var ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvasW, canvasH);
+    ctx.clearRect(0, 0, canvasSize, canvasSize);
 
     // 按图层顺序从底到顶依次绘制，后画的直接覆盖先画的（painter's algorithm）
     for (var ti = 0; ti < types.length; ti++) {
@@ -1710,6 +1724,7 @@ function renderCombinedOverlay(analysis, onProgress) {
 function renderCombinedOverlayAsync(analysis, onProgress, onComplete) {
     var N = analysis.charCount;
     var pixelSize = calcPixelSize(N);
+    var canvasSize = calcCanvasSize();
 
     var types = LAYER_ORDER;
     var grids = {};
@@ -1728,13 +1743,11 @@ function renderCombinedOverlayAsync(analysis, onProgress, onComplete) {
     }
 
     var canvas = document.getElementById('grid-canvas');
-    var canvasW = N * pixelSize;
-    var canvasH = N * pixelSize;
-    canvas.width = canvasW;
-    canvas.height = canvasH;
+    canvas.width = canvasSize;
+    canvas.height = canvasSize;
 
     var ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvasW, canvasH);
+    ctx.clearRect(0, 0, canvasSize, canvasSize);
 
     // 分批处理：以"图层 × 行"为粒度，按图层顺序从底到顶依次绘制（覆盖式）
     // 每批绘制若干行，跨图层时清零 currentRow 进入下一图层
