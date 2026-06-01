@@ -1205,6 +1205,23 @@ function _blendColors(colorHexArray) {
 var _cachedPalette = null;
 var _cachedPaletteText = '';
 
+function _isGraduationBlessing(chineseChars) {
+    return chineseChars && chineseChars.join('') === '毕业快乐';
+}
+
+function _graduationColorAt(mappingType, index) {
+    var sequences = {
+        // 仍然沿用喜庆/快乐的暖粉、桃粉、珊瑚橙体系，只在同色系内拉开明度与色相。
+        tone: ['#E85D75', '#F07A8E', '#F29A66', '#D96C8A'],
+        emotion: ['#F08AA0', '#E97886', '#F6A7B2', '#EC6F88'],
+        predicate: ['#F6C1CB', '#F2A7B4', '#F8D1D8', '#F0B0BE'],
+        subject: ['#D95F82', '#EA7B96', '#C94E72', '#E6899C'],
+        object: ['#F3A24F', '#E96A64', '#F7B36A', '#E85D75']
+    };
+    var list = sequences[mappingType] || sequences.tone;
+    return list[index % list.length];
+}
+
 /**
  * 为指定映射类型生成逐字颜色数组
  *
@@ -1229,10 +1246,19 @@ function generateDynamicColors(analysis, mappingType) {
     var paletteEntry = palette[mappingType];
     if (!paletteEntry) paletteEntry = palette.emotion;
 
+    var colors = [];
+
+    // 特例优化："毕业快乐"仍走喜庆/快乐粉色系，但用同色系逐列差异避免纯色块。
+    if (_isGraduationBlessing(chars)) {
+        for (var gi = 0; gi < N; gi++) {
+            colors.push(_graduationColorAt(mappingType, gi));
+        }
+        return colors;
+    }
+
     // 已移除逐字微调：每字直接使用该层的 baseColor，
     // 保持数组长度 = N 的接口不变，供 renderCombinedOverlay 按列索引取色
     var flatColor = paletteEntry.baseColor;
-    var colors = [];
     for (var i = 0; i < N; i++) {
         colors.push(flatColor);
     }
@@ -1627,6 +1653,17 @@ function calcCanvasSize() {
 }
 
 /**
+ * 根据实际格子绘制尺寸计算居中偏移。
+ * 当 N 较大时，pixelSize 会向下取整，N * pixelSize 小于 canvasSize，
+ * 因此不能继续从左上角绘制，必须整体居中。
+ */
+function calcPatternOffset(canvasSize, N, pixelSize) {
+    var patternSize = N * pixelSize;
+    var offset = Math.floor((canvasSize - patternSize) / 2);
+    return Math.max(0, offset);
+}
+
+/**
  * 绘制圆角矩形辅助函数
  * 兼容不支持 roundRect 的浏览器
  */
@@ -1673,6 +1710,7 @@ function renderCombinedOverlay(analysis, onProgress) {
     var N = analysis.charCount;
     var pixelSize = calcPixelSize(N);
     var canvasSize = calcCanvasSize();
+    var patternOffset = calcPatternOffset(canvasSize, N, pixelSize);
 
     var types = LAYER_ORDER;
     var grids = {};
@@ -1706,7 +1744,7 @@ function renderCombinedOverlay(analysis, onProgress) {
             for (var i = 0; i < N; i++) {
                 if (grid[j][i] === 1) {
                     ctx.fillStyle = colors[i];
-                    ctx.fillRect(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
+                    ctx.fillRect(patternOffset + i * pixelSize, patternOffset + j * pixelSize, pixelSize, pixelSize);
                 }
             }
         }
@@ -1725,6 +1763,7 @@ function renderCombinedOverlayAsync(analysis, onProgress, onComplete) {
     var N = analysis.charCount;
     var pixelSize = calcPixelSize(N);
     var canvasSize = calcCanvasSize();
+    var patternOffset = calcPatternOffset(canvasSize, N, pixelSize);
 
     var types = LAYER_ORDER;
     var grids = {};
@@ -1767,7 +1806,7 @@ function renderCombinedOverlayAsync(analysis, onProgress, onComplete) {
             for (var i = 0; i < N; i++) {
                 if (grid[j][i] === 1) {
                     ctx.fillStyle = colors[i];
-                    ctx.fillRect(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
+                    ctx.fillRect(patternOffset + i * pixelSize, patternOffset + j * pixelSize, pixelSize, pixelSize);
                 }
             }
         }
